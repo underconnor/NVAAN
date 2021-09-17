@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package com.baehyeonwoo.sample
+package com.baehyeonwoo.nvaan
 
 import io.github.monun.kommand.kommand
-import net.kyori.adventure.text.Component.text
+import org.bukkit.event.HandlerList
 import org.bukkit.plugin.Plugin
 
 /***
  * @author BaeHyeonWoo
  */
 
-object SampleKommand {
+object NVAANKommand {
     private fun getInstance(): Plugin {
-        return SamplePluginMain.instance
+        return NVAANPluginMain.instance
     }
     
     fun sampleKommand() {
         getInstance().kommand {
-            register("sample") {
-                requires { playerOrNull != null && isOp }
+            register("nvaan") {
                 executes {
-                    sender.sendMessage(text("Hello World!"))
+                    println("${HandlerList.getRegisteredListeners(getInstance())}")
                 }
             }
         }
