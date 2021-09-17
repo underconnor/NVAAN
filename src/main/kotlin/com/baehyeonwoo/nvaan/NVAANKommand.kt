@@ -37,9 +37,9 @@ object NVAANKommand {
             register("nvaan") {
                 requires { isOp }
                 executes {
-                    var enable = config.getBoolean("Enabled")
+                    val enable = config.getBoolean("Enabled")
 
-                    enable = !enable
+                    config.set("Enabled",!enable)
 
                     if(enable) sender.sendMessage(text("NVAAN Enabled!"))
                     else sender.sendMessage(text("NVAAN Disabled!"))
