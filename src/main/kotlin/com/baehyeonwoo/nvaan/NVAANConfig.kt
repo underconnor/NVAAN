@@ -15,6 +15,9 @@ object NVAANConfig {
         "3013e38a-74a7-41d4-8e68-71ee440c0e20"
     )
 
+    @Config
+    var Enabled = false
+
     fun load(configFile: File) {
         ConfigSupport.compute(this, configFile)
     }

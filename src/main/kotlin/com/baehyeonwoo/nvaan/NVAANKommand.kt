@@ -17,6 +17,7 @@
 package com.baehyeonwoo.nvaan
 
 import io.github.monun.kommand.kommand
+import net.kyori.adventure.text.Component.text
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.Plugin
 
@@ -28,12 +29,22 @@ object NVAANKommand {
     private fun getInstance(): Plugin {
         return NVAANPluginMain.instance
     }
-    
+
+    private val config = getInstance().config
+
     fun sampleKommand() {
         getInstance().kommand {
             register("nvaan") {
+                requires { isOp }
                 executes {
-                    println("${HandlerList.getRegisteredListeners(getInstance())}")
+                    val enable = config.getBoolean("Enabled")
+
+                    config.set("Enabled",!enable)
+
+                    if(enable) sender.sendMessage(text("NVAAN Enabled!"))
+                    else sender.sendMessage(text("NVAAN Disabled!"))
+
+                    getInstance().saveConfig()
                 }
             }
         }
