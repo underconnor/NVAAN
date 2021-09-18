@@ -33,9 +33,12 @@ class NVAANPluginMain : JavaPlugin() {
     private val configFile = File(dataFolder, "config.yml")
 
     override fun onEnable() {
+        val enabled = config.getBoolean("enabled")
         NVAANConfig.load(configFile)
         instance = this
-        server.pluginManager.registerEvents(NVAANEvent(), this)
-        NVAANKommand.sampleKommand()
+        if (enabled) {
+            server.pluginManager.registerEvents(NVAANEvent(), this)
+        }
+        NVAANKommand.nvaanKommand()
     }
 }

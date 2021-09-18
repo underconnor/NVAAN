@@ -18,6 +18,7 @@ package com.baehyeonwoo.nvaan
 
 import io.github.monun.kommand.kommand
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.Plugin
 
@@ -32,19 +33,49 @@ object NVAANKommand {
 
     private val config = getInstance().config
 
-    fun sampleKommand() {
+    private val server = getInstance().server
+
+    fun nvaanKommand() {
         getInstance().kommand {
             register("nvaan") {
-                requires { isOp }
+//                requires { isOp }
+//                For console control reasons.
                 executes {
-                    val enable = config.getBoolean("Enabled")
-
-                    config.set("Enabled",!enable)
-
-                    if(enable) sender.sendMessage(text("NVAAN Enabled!"))
-                    else sender.sendMessage(text("NVAAN Disabled!"))
-
-                    getInstance().saveConfig()
+                    sender.sendMessage(text("Usage: /nvaan <status/on/off>"))
+                }
+                then("status") {
+                    executes {
+                        val enabled = config.getBoolean("enabled")
+                        sender.sendMessage(text("Current NVAAN Status: $enabled"))
+                    }
+                }
+                then("on") {
+                    executes {
+                        val enabled = config.getBoolean("enabled")
+                        if (enabled) {
+                            sender.sendMessage(text("NVAAN is Already Enabled.", NamedTextColor.RED))
+                        }
+                        else {
+                            config.set("enabled", true)
+                            getInstance().saveConfig()
+                            server.pluginManager.registerEvents(NVAANEvent(), getInstance())
+                            sender.sendMessage(text("NVAAN is Now Enabled!", NamedTextColor.GREEN))
+                        }
+                    }
+                }
+                then("off") {
+                    executes {
+                        val enabled = config.getBoolean("enabled")
+                        if (!enabled) {
+                            sender.sendMessage(text("NVAAN is Already Disabled.", NamedTextColor.RED))
+                        }
+                        else {
+                            config.set("enabled", false)
+                            getInstance().saveConfig()
+                            HandlerList.unregisterAll(getInstance())
+                            sender.sendMessage(text("NVAAN is Now Disabled!", NamedTextColor.GREEN))
+                        }
+                    }
                 }
             }
         }

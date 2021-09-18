@@ -58,20 +58,21 @@ class NVAANEvent : Listener {
     fun onPlayerLogin(e: PlayerLoginEvent) {
         val result = e.result
         val p = e.player
-        val enable = config.getBoolean("Enabled")
+        val enabled = config.getBoolean("enabled")
         
-        if (enable && result == Result.KICK_WHITELIST) {
+        if (enabled && result == Result.KICK_WHITELIST) {
             if (administrator.contains(p.uniqueId.toString())) return
             else {
                 if (p.uniqueId.kickCount <= 0) {
                     server.getBanList(Type.NAME).addBan(p.name, "${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
                     server.banIP("${p.address}")
+                    getInstance().logger.info("Player ${p.name} (/${p.address}) is not whitelisted, and has been banned for connecting the server for many times! Hooray! We got one of the worms!")
                     e.disallow(Result.KICK_BANNED,text("${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다."))
                 }
                 else {
                     e.disallow(Result.KICK_WHITELIST,text("화이트리스트가 아니십니다. 서버에 접속하지 말아주세요.\n" +
                             "${ChatColor.BOLD}지금으로부터 ${p.uniqueId.kickCount}번 이상 접속하시게 되면 자동으로 밴 처리 되며, 앞으로의 컨텐츠에서 밴이 될 수 있음을 알려드립니다.\n" +
-                            "${ChatColor.RESET}컨텐츠가 시작된 이후라면 화이트리스트 추가 이전이니 서버 접속 시도를 멈추시고 관리자 알림이 올때까지 잠시만 기다려 주세요." +
+                            "${ChatColor.RESET}컨텐츠가 시작된 이후라면 화이트리스트 추가 이전이니 서버 접속 시도를 멈추시고 관리자 알림이 올때까지 잠시만 기다려 주세요.\n" +
                             "경고는 매 서버 시작마다 초기화 됩니다."))
                     --p.uniqueId.kickCount
                 }

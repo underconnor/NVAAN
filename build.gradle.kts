@@ -17,6 +17,8 @@ dependencies {
 }
 
 tasks {
+    val archive = project.properties["pluginName"].toString()
+
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = JavaVersion.VERSION_16.toString()
     }
@@ -27,11 +29,20 @@ tasks {
         filteringCharset = "UTF-8"
     }
     jar {
-        archiveClassifier.set("dist")
+        archiveBaseName.set(archive)
+        archiveClassifier.set("")
         archiveVersion.set("")
     }
-    create<Copy>("dist") {
-        from (jar)
-        into(".\\.server\\plugins")
+    create<Copy>("paperJar") {
+        from(jar)
+        val plugins = File(rootDir, ".server/plugins/")
+        copy {
+            into(plugins)
+            destinationDir = plugins
+        }
+        copy {
+            into(File(plugins, "update"))
+            destinationDir = File(plugins, "update")
+        }
     }
 }

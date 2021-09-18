@@ -16,7 +16,7 @@ object NVAANConfig {
     )
 
     @Config
-    var Enabled = false
+    var enabled = true
 
     fun load(configFile: File) {
         ConfigSupport.compute(this, configFile)
