@@ -65,8 +65,8 @@ class NVAANEvent : Listener {
             else {
                 if (p.uniqueId.kickCount <= 0) {
                     server.getBanList(Type.NAME).addBan(p.name, "${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
-                    server.banIP("${p.address}")
-                    getInstance().logger.info("Player ${p.name} (/${p.address}) is not whitelisted, and has been banned for connecting the server for many times! Hooray! We got one of the worms!")
+                    server.getBanList(Type.IP).addBan("${e.realAddress}", "${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
+                    getInstance().logger.info("Player ${p.name} (/${e.realAddress}) is not whitelisted, and has been banned for connecting the server for many times! Hooray! We got one of the worms!")
                     e.disallow(Result.KICK_BANNED,text("${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다."))
                 }
                 else {
