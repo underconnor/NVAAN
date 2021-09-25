@@ -4,7 +4,7 @@ import io.github.monun.tap.config.Config
 import io.github.monun.tap.config.ConfigSupport
 import java.io.File
 
-object NVAANConfig {
+object NVAANAdminConfig {
     @Config
     var administrator = arrayListOf(
         "389c4c9b-6342-42fc-beb3-922a7d7a72f9",
@@ -17,6 +17,12 @@ object NVAANConfig {
 
     @Config
     var enabled = true
+
+    @Config
+    var whitelistOnly = true
+
+    @Config
+    var adminOnly = true
 
     fun load(configFile: File) {
         ConfigSupport.compute(this, configFile)

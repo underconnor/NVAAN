@@ -30,15 +30,19 @@ class NVAANPluginMain : JavaPlugin() {
             private set
     }
 
-    private val configFile = File(dataFolder, "config.yml")
+    private val configFile = File("plugins/WhitelistConfig", "config.yml")
+
+    private val whitelistConfig = File("plugins/WhitelistConfig", "Whitelist.txt")
 
     override fun onEnable() {
+        NVAANAdminConfig.load(configFile)
+        NVAANWhitelistConfig.load(whitelistConfig)
         val enabled = config.getBoolean("enabled")
-        NVAANConfig.load(configFile)
         instance = this
         if (enabled) {
             server.pluginManager.registerEvents(NVAANEvent(), this)
         }
         NVAANKommand.nvaanKommand()
+        server.scheduler.scheduleSyncRepeatingTask(this, NVAANConfigReloadTask(), 0, 0)
     }
 }

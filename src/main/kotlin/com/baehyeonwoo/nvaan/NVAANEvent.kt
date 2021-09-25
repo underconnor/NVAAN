@@ -18,14 +18,17 @@ package com.baehyeonwoo.nvaan
 
 import com.baehyeonwoo.nvaan.NVAANObject.kickCount
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.BanList.Type
 import org.bukkit.ChatColor
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerLoginEvent.Result
 import org.bukkit.plugin.Plugin
+import java.net.InetAddress
 
 /***
  * @author BaeHyeonWoo
@@ -41,6 +44,35 @@ class NVAANEvent : Listener {
     private val config = getInstance().config
 
     private val administrator = config.getString("administrator").toString()
+
+    private fun adminAndWhitelistOnly(player: Player, realAddress: InetAddress) {
+        if (player.uniqueId.kickCount <= 0 || config.getInt("${player.uniqueId}.kickCount") <= 0) {
+            server.getBanList(Type.NAME).addBan(player.name, "${ChatColor.BOLD}관리자나 화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
+            server.getBanList(Type.IP).addBan("$realAddress", "${ChatColor.BOLD}관리자나 화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
+            player.kick(text("관리자나 화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.").decorate(TextDecoration.BOLD))
+        } else {
+            player.kick(text("관리자나 화이트리스트가 아니십니다. 서버에 접속하지 말아주세요.\n" +
+                    "${ChatColor.BOLD}지금으로부터 ${player.uniqueId.kickCount}번 이상 접속하시게 되면 자동으로 밴 처리 되며, 앞으로의 이 서버에서 영구적으로 밴이 될 수 있음을 알려드립니다.\n" +
+                    "${ChatColor.RESET}접속이 되어야 된다 생각되는 시점이면 대기 혹은 관리자 문의 부탁드립니다.\n"))
+            --player.uniqueId.kickCount
+            config.set("${player.uniqueId}.kickCount", player.uniqueId.kickCount)
+        }
+    }
+
+    private fun adminOnly(player: Player, realAddress: InetAddress) {
+        if (player.uniqueId.kickCount <= 0 || config.getInt("${player.uniqueId}.kickCount") <= 0) {
+            server.getBanList(Type.NAME).addBan(player.name, "${ChatColor.BOLD}현재 관리자만 접속이 가능하다는 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
+            server.getBanList(Type.IP).addBan("$realAddress", "${ChatColor.BOLD}현재 관리자만 접속이 가능하다는 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
+            player.kick(text("현재 관리자만 접속이 가능하다는 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.").decorate(TextDecoration.BOLD))
+        }
+        else {
+            player.kick(text("관리자가 아니십니다. 서버에 접속하지 말아주세요.\n" +
+                    "${ChatColor.BOLD}지금으로부터 ${player.uniqueId.kickCount}번 이상 접속하시게 되면 자동으로 밴 처리 되며, 앞으로 이 서버에서 영구적으로 밴이 될 수 있음을 알려드립니다.\n" +
+                    "${ChatColor.RESET}접속이 되어야 된다 생각되는 시점이면 대기 혹은 관리자 문의 부탁드립니다.\n"))
+            --player.uniqueId.kickCount
+            config.set("${player.uniqueId}.kickCount", player.uniqueId.kickCount)
+        }
+    }
 
     @EventHandler
     fun onPlayerCommandPreProcess(e: PlayerCommandPreprocessEvent) {
@@ -59,25 +91,22 @@ class NVAANEvent : Listener {
         val result = e.result
         val p = e.player
         val enabled = config.getBoolean("enabled")
-        
-        if (enabled && result == Result.KICK_WHITELIST) {
-            if (administrator.contains(p.uniqueId.toString())) return
-            else {
-                if (p.uniqueId.kickCount <= 0) {
-                    server.getBanList(Type.NAME).addBan(p.name, "${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
-                    server.getBanList(Type.IP).addBan("${e.realAddress}", "${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다.", null, "Console")
-                    getInstance().logger.info("Player ${p.name} (/${e.realAddress}) is not whitelisted, and has been banned for connecting the server for many times! Hooray! We got one of the worms!")
-                    e.disallow(Result.KICK_BANNED,text("${ChatColor.BOLD}화이트리스트가 아니고 연속적인 경고를 주었으나 무시하고 접속하였기에 밴 처리 되셨습니다."))
-                }
+        val whitelistOnly = config.getBoolean("whitelist-only")
+        val adminOnly = config.getBoolean("admin-only")
+
+        if (enabled) {
+            if (adminOnly && whitelistOnly && result != Result.ALLOWED) {
+                if (administrator.contains(p.uniqueId.toString()) || p.name in NVAANWhitelistConfig.allows) return
                 else {
-                    e.disallow(Result.KICK_WHITELIST,text("화이트리스트가 아니십니다. 서버에 접속하지 말아주세요.\n" +
-                            "${ChatColor.BOLD}지금으로부터 ${p.uniqueId.kickCount}번 이상 접속하시게 되면 자동으로 밴 처리 되며, 앞으로의 컨텐츠에서 밴이 될 수 있음을 알려드립니다.\n" +
-                            "${ChatColor.RESET}컨텐츠가 시작된 이후라면 화이트리스트 추가 이전이니 서버 접속 시도를 멈추시고 관리자 알림이 올때까지 잠시만 기다려 주세요.\n" +
-                            "경고는 매 서버 시작마다 초기화 됩니다."))
-                    --p.uniqueId.kickCount
+                    adminAndWhitelistOnly(p, e.realAddress)
+                }
+            }
+            if (adminOnly && result != Result.ALLOWED) {
+                if (administrator.contains(p.uniqueId.toString())) return
+                else {
+                    adminOnly(p, e.realAddress)
                 }
             }
         }
-        else return
     }
 }

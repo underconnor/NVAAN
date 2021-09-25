@@ -59,6 +59,7 @@ object NVAANKommand {
                             config.set("enabled", true)
                             getInstance().saveConfig()
                             server.pluginManager.registerEvents(NVAANEvent(), getInstance())
+                            server.scheduler.scheduleSyncRepeatingTask(getInstance(), NVAANConfigReloadTask(), 0, 0)
                             sender.sendMessage(text("NVAAN is Now Enabled!", NamedTextColor.GREEN))
                         }
                     }
@@ -73,7 +74,62 @@ object NVAANKommand {
                             config.set("enabled", false)
                             getInstance().saveConfig()
                             HandlerList.unregisterAll(getInstance())
+                            server.scheduler.cancelTasks(getInstance())
                             sender.sendMessage(text("NVAAN is Now Disabled!", NamedTextColor.GREEN))
+                        }
+                    }
+                }
+                then("config") {
+                    then("whitelistOnly") {
+                        then("on") {
+                            executes {
+                                val whitelistOnly = config.getBoolean("whitelist-only")
+                                if (whitelistOnly) {
+                                    sender.sendMessage(text("Whitelist Only Option is Already Enabled.", NamedTextColor.RED))
+                                }
+                                else {
+                                    config.set("whitelist-only", true)
+                                    sender.sendMessage(text("Whitelist Only Options is Now Enabled!", NamedTextColor.GREEN))
+                                }
+                            }
+                        }
+                        then("off") {
+                            executes {
+                                val whitelistOnly = config.getBoolean("whitelist-only")
+                                if (!whitelistOnly) {
+                                    sender.sendMessage(text("Whitelist Only Option is Already Disabled.", NamedTextColor.RED))
+                                }
+                                else {
+                                    config.set("whitelist-only", false)
+                                    sender.sendMessage(text("Whitelist Only Options is Now Disabled!", NamedTextColor.GREEN))
+                                }
+                            }
+                        }
+                    }
+                    then("adminOnly") {
+                        then("on") {
+                            executes {
+                                val adminOnly = config.getBoolean("admin-only")
+                                if (adminOnly) {
+                                    sender.sendMessage(text("Admin Only Option is Already Enabled.", NamedTextColor.RED))
+                                }
+                                else {
+                                    config.set("whitelist-only", true)
+                                    sender.sendMessage(text("Admin Only Options is Now Enabled!", NamedTextColor.GREEN))
+                                }
+                            }
+                        }
+                        then("off") {
+                            executes {
+                                val adminOnly = config.getBoolean("admin-only")
+                                if (!adminOnly) {
+                                    sender.sendMessage(text("Admin Only Option is Already Disabled.", NamedTextColor.RED))
+                                }
+                                else {
+                                    config.set("whitelist-only", true)
+                                    sender.sendMessage(text("Admin Only Options is Now Disabled!", NamedTextColor.GREEN))
+                                }
+                            }
                         }
                     }
                 }
