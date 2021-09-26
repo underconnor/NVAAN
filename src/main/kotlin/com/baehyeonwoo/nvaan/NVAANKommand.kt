@@ -89,7 +89,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("whitelist-only", true)
-                                    sender.sendMessage(text("Whitelist Only Options is Now Enabled!", NamedTextColor.GREEN))
+                                    sender.sendMessage(text("Whitelist Only Option is Now Enabled!", NamedTextColor.GREEN))
                                 }
                             }
                         }
@@ -101,7 +101,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("whitelist-only", false)
-                                    sender.sendMessage(text("Whitelist Only Options is Now Disabled!", NamedTextColor.GREEN))
+                                    sender.sendMessage(text("Whitelist Only Option is Now Disabled!", NamedTextColor.GREEN))
                                 }
                             }
                         }
@@ -115,7 +115,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("admin-only", true)
-                                    sender.sendMessage(text("Admin Only Options is Now Enabled!", NamedTextColor.GREEN))
+                                    sender.sendMessage(text("Admin Only Option is Now Enabled!", NamedTextColor.GREEN))
                                 }
                             }
                         }
@@ -127,7 +127,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("admin-only", true)
-                                    sender.sendMessage(text("Admin Only Options is Now Disabled!", NamedTextColor.GREEN))
+                                    sender.sendMessage(text("Admin Only Option is Now Disabled!", NamedTextColor.GREEN))
                                 }
                             }
                         }
