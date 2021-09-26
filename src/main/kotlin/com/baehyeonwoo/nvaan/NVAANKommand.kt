@@ -89,6 +89,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("whitelist-only", true)
+                                    getInstance().saveConfig()
                                     sender.sendMessage(text("Whitelist Only Option is Now Enabled!", NamedTextColor.GREEN))
                                 }
                             }
@@ -101,6 +102,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("whitelist-only", false)
+                                    getInstance().saveConfig()
                                     sender.sendMessage(text("Whitelist Only Option is Now Disabled!", NamedTextColor.GREEN))
                                 }
                             }
@@ -115,6 +117,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("admin-only", true)
+                                    getInstance().saveConfig()
                                     sender.sendMessage(text("Admin Only Option is Now Enabled!", NamedTextColor.GREEN))
                                 }
                             }
@@ -127,6 +130,7 @@ object NVAANKommand {
                                 }
                                 else {
                                     config.set("admin-only", true)
+                                    getInstance().saveConfig()
                                     sender.sendMessage(text("Admin Only Option is Now Disabled!", NamedTextColor.GREEN))
                                 }
                             }
