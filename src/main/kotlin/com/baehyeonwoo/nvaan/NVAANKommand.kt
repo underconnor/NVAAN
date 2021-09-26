@@ -114,7 +114,7 @@ object NVAANKommand {
                                     sender.sendMessage(text("Admin Only Option is Already Enabled.", NamedTextColor.RED))
                                 }
                                 else {
-                                    config.set("whitelist-only", true)
+                                    config.set("admin-only", true)
                                     sender.sendMessage(text("Admin Only Options is Now Enabled!", NamedTextColor.GREEN))
                                 }
                             }
@@ -126,7 +126,7 @@ object NVAANKommand {
                                     sender.sendMessage(text("Admin Only Option is Already Disabled.", NamedTextColor.RED))
                                 }
                                 else {
-                                    config.set("whitelist-only", true)
+                                    config.set("admin-only", true)
                                     sender.sendMessage(text("Admin Only Options is Now Disabled!", NamedTextColor.GREEN))
                                 }
                             }
