@@ -30,7 +30,7 @@ class NVAANPluginMain : JavaPlugin() {
             private set
     }
 
-    private val configFile = File("plugins/WhitelistConfig", "config.yml")
+    private val configFile = File(dataFolder, "config.yml")
 
     private val whitelistConfig = File("plugins/WhitelistConfig", "Whitelist.txt")
 

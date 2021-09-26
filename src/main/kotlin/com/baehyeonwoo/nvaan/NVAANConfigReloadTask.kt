@@ -11,7 +11,7 @@ class NVAANConfigReloadTask : Runnable {
 
     private val logger = getInstance().logger
 
-    private val adminConfigFile = File("plugins/WhitelistConfig", "config.yml")
+    private val adminConfigFile = File(getInstance().dataFolder, "config.yml")
 
     private val whitelistConfig = File("plugins/WhitelistConfig", "Whitelist.txt")
 
